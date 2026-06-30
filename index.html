@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canvas &amp; Co — Art for your walls</title>
+  <style>
+    :root {
+      --cream: #fbfaf7;       /* design.md background */
+      --card: #ffffff;
+      --ink: #34302a;
+      --soft-ink: #6b6457;
+      --line: #ece5da;
+      --accent: #b5673f;      /* design.md terracotta */
+      --accent-deep: #9a542f; /* darker terracotta for hover/links */
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.65;
+    }
+
+    /* Body copy uses a clean sans; headings use the serif above */
+    p, .price, .meta, footer, .eyebrow {
+      font-family: "Helvetica Neue", Arial, system-ui, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Hero ---------- */
+    header.hero {
+      text-align: center;
+      padding: 88px 0 64px;
+    }
+    .wordmark {
+      font-size: 14px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      margin: 0 0 22px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      line-height: 1.12;
+      margin: 0 auto 20px;
+      max-width: 16ch;
+      font-weight: 600;
+    }
+    .hero p {
+      font-size: 1.08rem;
+      color: var(--soft-ink);
+      max-width: 56ch;
+      margin: 0 auto;
+    }
+
+    /* ---------- Featured ---------- */
+    .section-head {
+      text-align: center;
+      margin: 24px 0 40px;
+    }
+    .section-head h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+    .section-head p {
+      color: var(--soft-ink);
+      margin: 0 auto;
+      max-width: 50ch;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      padding-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 2px rgba(52, 48, 42, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(52, 48, 42, 0.10);
+    }
+    .card .art {
+      aspect-ratio: 4 / 3;
+      width: 100%;
+      object-fit: cover;
+      display: block;
+      background: var(--line);
+    }
+    .card-body {
+      padding: 22px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 8px;
+    }
+    .card-body h3 {
+      font-size: 1.35rem;
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+    .card-body .desc {
+      color: var(--soft-ink);
+      font-size: 0.98rem;
+      margin: 0 0 18px;
+      flex: 1;
+    }
+    .price {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    /* ---------- Shop gallery ---------- */
+    .gallery {
+      margin-top: 88px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .card.compact .card-body {
+      padding: 18px 18px 20px;
+    }
+    .card.compact h3 {
+      font-size: 1.15rem;
+      margin: 0 0 6px;
+    }
+    .card .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 8px;
+    }
+    .card .top-row .eyebrow { margin: 0; }
+    .badge {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--accent);
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ---------- About ---------- */
+    .about {
+      margin: 80px 0 0;
+      padding: 56px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+    .about h2 {
+      font-size: 1.5rem;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    .about p {
+      color: var(--soft-ink);
+      max-width: 60ch;
+      margin: 0 auto 14px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      text-align: center;
+      padding: 48px 0 64px;
+      color: var(--soft-ink);
+      font-size: 0.95rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { color: var(--accent-deep); text-decoration: underline; }
+    footer .dot { margin: 0 10px; opacity: 0.5; }
+    footer .name {
+      font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+      header.hero { padding: 64px 0 40px; }
+      footer .dot { display: block; height: 6px; margin: 6px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <p class="wordmark">Canvas &amp; Co</p>
+      <h1>Art for the walls of your home</h1>
+      <p>
+        We're a two-person studio in Portland, Oregon. We design every piece
+        ourselves, print it on premium canvas, and send it to you ready to hang.
+        Here are the three prints our customers reach for most.
+      </p>
+    </header>
+
+    <section aria-labelledby="featured-head">
+      <div class="section-head">
+        <h2 id="featured-head">The ones people love most</h2>
+        <p>One favorite from each of our collections — the prints that keep finding
+           their way into new homes.</p>
+      </div>
+
+      <div class="grid" id="featured-grid"></div>
+    </section>
+
+    <section class="gallery" aria-labelledby="gallery-head">
+      <div class="section-head">
+        <h2 id="gallery-head">Shop the whole collection</h2>
+        <p>Every print we make, gathered in one place — with our most-loved pieces
+           leading the way.</p>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <section class="about">
+      <h2>A little about us</h2>
+      <p>
+        Canvas &amp; Co is just the two of us, making original artwork by hand and
+        printing it close to home. Most of our prints go to people settling into a
+        new place or searching for a thoughtful gift — and most of them find us
+        through someone they know.
+      </p>
+      <p>
+        Our work falls into three collections: <strong>Landscape</strong>, for calm
+        golden-hour scenes; <strong>Botanical</strong>, for leaves and plant studies
+        in soft natural tones; and <strong>Abstract</strong>, for color and shape on
+        a modern wall.
+      </p>
+    </section>
+
+    <footer>
+      <div class="name">Canvas &amp; Co</div>
+      <a href="mailto:hello@canvasandco.example">hello@canvasandco.example</a>
+      <span class="dot">·</span>
+      114 Maker's Lane, Portland, OR
+      <span class="dot">·</span>
+      Mon–Fri 9–5 PT
+    </footer>
+  </div>
+
+  <script>
+    // The page builds itself from two data files so it stays up to date:
+    //   products.csv      — the catalog (name, category, price, image)
+    //   sales_public.csv  — public sales totals (product, category, units_sold)
+    // Update those files and the storefront re-ranks itself. No private data here.
+
+    // Curated descriptions for the three featured cards (not stored in the CSVs).
+    // If a future top seller has no entry here, its card simply shows no blurb.
+    const BLURBS = {
+      "Golden Hour Meadow": "That last hour of warm light over an open field. Soft, golden, and quiet — the kind of calm you want to come home to.",
+      "Monstera Leaf": "A single monstera leaf, studied up close in gentle greens. A little bit of living room garden, no watering required.",
+      "Color Field 02": "Shapes and color, balanced just so. A modern piece that brings a wall to life without saying too much."
+    };
+
+    const CATEGORY_ORDER = ["Landscape", "Botanical", "Abstract"];
+
+    // Turn raw CSV text into a list of row objects keyed by the header names.
+    function parseCSV(text) {
+      const lines = text.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
+      const headers = lines[0].split(",").map(h => h.trim());
+      return lines.slice(1).map(line => {
+        const cells = line.split(",");
+        const row = {};
+        headers.forEach((h, i) => { row[h] = (cells[i] || "").trim(); });
+        return row;
+      });
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, c => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+      ));
+    }
+
+    // Best-seller order, using only public data:
+    // most units first; ties broken by higher price, then name A–Z.
+    function compare(a, b) {
+      return (b.units - a.units) || (b.price - a.price) || a.name.localeCompare(b.name);
+    }
+
+    function featuredCard(p) {
+      const blurb = BLURBS[p.name]
+        ? `<p class="desc">${esc(BLURBS[p.name])}</p>` : "";
+      return `
+        <article class="card">
+          <img class="art" src="${esc(p.image)}" alt="${esc(p.name)} — a ${esc(p.category.toLowerCase())} print" />
+          <div class="card-body">
+            <p class="eyebrow">${esc(p.category)}</p>
+            <h3>${esc(p.name)}</h3>
+            ${blurb}
+            <p class="price">$${esc(p.price)}</p>
+          </div>
+        </article>`;
+    }
+
+    function galleryCard(p, isBestseller) {
+      const head = isBestseller
+        ? `<div class="top-row"><p class="eyebrow">${esc(p.category)}</p><span class="badge">Bestseller</span></div>`
+        : `<p class="eyebrow">${esc(p.category)}</p>`;
+      return `
+        <article class="card compact">
+          <img class="art" src="${esc(p.image)}" alt="${esc(p.name)} — a ${esc(p.category.toLowerCase())} print" />
+          <div class="card-body">
+            ${head}
+            <h3>${esc(p.name)}</h3>
+            <p class="price">$${esc(p.price)}</p>
+          </div>
+        </article>`;
+    }
+
+    function fail(message) {
+      ["featured-grid", "gallery-grid"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<p style="color:var(--soft-ink)">${esc(message)}</p>`;
+      });
+    }
+
+    Promise.all([
+      fetch("products.csv").then(r => r.text()),
+      fetch("sales_public.csv").then(r => r.text())
+    ]).then(([productsText, salesText]) => {
+      const units = {};
+      parseCSV(salesText).forEach(r => {
+        units[r.product] = Number(r.units_sold) || 0;
+      });
+
+      const products = parseCSV(productsText).map(r => ({
+        name: r.name,
+        category: r.category,
+        price: Number(r.price),
+        image: r.image,
+        units: units[r.name] || 0
+      })).sort(compare);
+
+      // Featured: the single top seller in each collection.
+      const featured = CATEGORY_ORDER
+        .map(cat => products.find(p => p.category === cat))
+        .filter(Boolean);
+      document.getElementById("featured-grid").innerHTML =
+        featured.map(featuredCard).join("");
+
+      // Gallery: every product, best seller first.
+      document.getElementById("gallery-grid").innerHTML =
+        products.map((p, i) => galleryCard(p, i === 0)).join("");
+    }).catch(() => {
+      fail("This page needs to be opened through a web address (it’s now running live online), not by double-clicking the file.");
+    });
+  </script>
+</body>
+</html>

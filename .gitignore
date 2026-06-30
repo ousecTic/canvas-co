@@ -1,0 +1,5 @@
+# Private — never publish these.
+# sales.csv holds customer names + email addresses.
+sales.csv
+# sales-report.html is the internal sales dashboard (revenue, etc.).
+sales-report.html
