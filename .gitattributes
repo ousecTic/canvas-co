@@ -1,0 +1,3 @@
+# Keep CSVs as LF so the daily routine's output matches the committed file
+# (otherwise Windows CRLF conversion creates phantom "changes" every run).
+*.csv text eol=lf
